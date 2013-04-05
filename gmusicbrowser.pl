@@ -7383,9 +7383,10 @@ sub ShowHide
 			{	$x%= $scrw;
 				$y%= $scrh;
 			}
-			$win->move($x,$y);
+			#$win->move($x,$y);
 			$win->show;
-			$win->move($x,$y);
+			$win->maximize;
+			#$win->move($x,$y);
 			$win->deiconify if $win->{iconified};
 			$win->set_skip_taskbar_hint(FALSE) unless delete $win->{skip_taskbar_hint};
 			#$win->set_opacity($win->{opacity}) if exists $win->{opacity} && $win->{opacity}!=1; #need to re-set it, is it a gtk bug, metacity bug ?
