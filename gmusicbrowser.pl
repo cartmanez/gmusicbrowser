@@ -958,6 +958,7 @@ our %Options=
 	Icecast_port	=> '8000',
 	UseTray		=> 1,
 	CloseToTray	=> 0,
+	AlwaysMaximize	=> 0,
 	ShowTipOnSongChange	=> 0,
 	TrayTipTimeLength	=> 3000, #in ms
 	TAG_use_latin1_if_possible => 1,
@@ -6256,11 +6257,12 @@ sub PrefLayouts
 	my $traytiplength=NewPrefSpinButton('TrayTipTimeLength', 0,100000, step=>100, text=>_"Display tray tip for %d ms");
 	my $checkT5=NewPrefCheckButton(StartInTray => _"Start in tray");
 	my $checkT2=NewPrefCheckButton(CloseToTray => _"Close to tray");
+	my $checkT6=NewPrefCheckButton(AlwaysMaximize => _"Always Maximize Player Window");
 	my $checkT3=NewPrefCheckButton(ShowTipOnSongChange => _"Show tray tip on song change", widget=>$traytiplength);
 	my $checkT4=NewPrefSpinButton('TrayTipDelay', 0,10000, step=>100, text=> _"Delay before showing tray tip popup on mouse over : %d ms", cb=>\&SetTrayTipDelay);
 	my $checkT1=NewPrefCheckButton( UseTray => _"Show tray icon",
 					cb=> sub { &CreateTrayIcon; },
-					widget=> Vpack($checkT5,$checkT2,$checkT4,$checkT3)
+					widget=> Vpack($checkT5,$checkT2,$checkT6,$checkT4,$checkT3)
 					);
 	$checkT1->set_sensitive($TrayIconAvailable);
 
@@ -7385,8 +7387,11 @@ sub ShowHide
 			}
 			#$win->move($x,$y);
 			$win->show;
-			$win->maximize;
-			#$win->move($x,$y);
+			if ($Options{AlwaysMaximize}) {
+				$win->maximize;
+			} else {
+				$win->move($x,$y);
+			}
 			$win->deiconify if $win->{iconified};
 			$win->set_skip_taskbar_hint(FALSE) unless delete $win->{skip_taskbar_hint};
 			#$win->set_opacity($win->{opacity}) if exists $win->{opacity} && $win->{opacity}!=1; #need to re-set it, is it a gtk bug, metacity bug ?
